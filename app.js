@@ -1,62 +1,89 @@
+
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
+// LIGAÇÃO AO SUPABASE
 const SUPABASE_URL = "https://fqmwhuxtnmkigqzxvvdr.supabase.co";
 const SUPABASE_KEY = "sb_publishable_Y9G1dFENVRTQCpJXgoo8BQ_D6KUlhJY";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// IDENTIFICADOR DO RESTAURANTE
+const RESTAURANTE_SLUG = "mare-e-brasa";
+
+// ELEMENTOS HTML
 const restauranteEl = document.getElementById("restaurante");
 const categoriasEl = document.getElementById("categorias");
 const produtosEl = document.getElementById("produtos");
 
+let restauranteId = null;
 let todosProdutos = [];
 let categoriaAtiva = "todos";
 
+// CRIAR ELEMENTOS DE TEXTO COM SEGURANÇA
 function criarTexto(tag, texto) {
     const elemento = document.createElement(tag);
     elemento.textContent = texto || "";
     return elemento;
 }
 
+// FORMATAR PREÇOS EM METICAIS
+function formatarPreco(centavos) {
+    return (Number(centavos || 0) / 100).toLocaleString("pt-MZ", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }) + " MT";
+}
+
+// CARREGAR DADOS DO RESTAURANTE
 async function carregarRestaurante() {
     const { data, error } = await supabase
         .from("restaurantes")
-        .select("*")
-        .limit(1)
+        .select("id, nome, endereco, slug, ativo")
+        .eq("slug", RESTAURANTE_SLUG)
+        .eq("ativo", true)
         .maybeSingle();
 
     if (error) {
         restauranteEl.textContent = "Erro ao carregar o restaurante.";
-        console.error(error);
-        return;
+        console.error("Erro no restaurante:", error);
+        return false;
     }
 
     if (!data) {
         restauranteEl.textContent = "Restaurante não encontrado.";
-        return;
+        return false;
     }
+
+    restauranteId = data.id;
 
     restauranteEl.replaceChildren(
         criarTexto("h2", data.nome),
-        criarTexto("p", data.morada || "Maputo, Moçambique")
+        criarTexto("p", data.endereco || "Maputo, Moçambique")
     );
+
+    return true;
 }
 
+// CARREGAR CATEGORIAS
 async function carregarCategorias() {
     const { data, error } = await supabase
         .from("categorias")
-        .select("*")
-        .order("nome");
+        .select("id, nome, ordem")
+        .eq("restaurante_id", restauranteId)
+        .eq("visivel", true)
+        .order("ordem", { ascending: true });
 
     if (error) {
+        categoriasEl.textContent = "Erro ao carregar categorias.";
         console.error("Erro nas categorias:", error);
         return;
     }
 
     categoriasEl.replaceChildren();
 
-    const todas = criarBotaoCategoria("Todos", "todos");
-    categoriasEl.appendChild(todas);
+    categoriasEl.appendChild(
+        criarBotaoCategoria("Todos", "todos")
+    );
 
     (data || []).forEach(categoria => {
         categoriasEl.appendChild(
@@ -65,8 +92,10 @@ async function carregarCategorias() {
     });
 }
 
+// CRIAR BOTÕES DAS CATEGORIAS
 function criarBotaoCategoria(nome, id) {
     const botao = document.createElement("button");
+
     botao.textContent = nome;
     botao.classList.toggle("ativo", String(id) === "todos");
 
@@ -78,42 +107,70 @@ function criarBotaoCategoria(nome, id) {
         });
 
         botao.classList.add("ativo");
+
         mostrarProdutos();
     });
 
     return botao;
 }
 
+// OBTER URL PÚBLICO DA FOTOGRAFIA
+function obterImagem(fotoPath) {
+    if (!fotoPath) {
+        return null;
+    }
+
+    const { data } = supabase.storage
+        .from("fotos-pratos")
+        .getPublicUrl(fotoPath);
+
+    return data.publicUrl;
+}
+
+// CARREGAR PRODUTOS
 async function carregarProdutos() {
+    produtosEl.textContent = "A carregar produtos...";
+
     const { data, error } = await supabase
         .from("produtos")
-        .select("*")
-        .order("nome");
+        .select(`
+            id,
+            categoria_id,
+            nome,
+            descricao,
+            preco_centavos,
+            foto_path,
+            disponivel,
+            destaque,
+            ordem
+        `)
+        .eq("restaurante_id", restauranteId)
+        .eq("disponivel", true)
+        .eq("arquivado", false)
+        .order("ordem", { ascending: true });
 
     if (error) {
-        produtosEl.textContent = "Erro ao carregar os produtos.";
-        console.error(error);
+        produtosEl.textContent = "Erro ao carregar produtos.";
+        console.error("Erro nos produtos:", error);
         return;
     }
 
     todosProdutos = data || [];
+
     mostrarProdutos();
 }
 
+// MOSTRAR PRODUTOS NA PÁGINA
 function mostrarProdutos() {
     produtosEl.replaceChildren();
 
     const filtrados = todosProdutos.filter(produto => {
-        const disponivel = produto.disponivel !== false;
-        const categoriaCorreta =
-            categoriaAtiva === "todos" ||
+        return categoriaAtiva === "todos" ||
             String(produto.categoria_id) === categoriaAtiva;
-
-        return disponivel && categoriaCorreta;
     });
 
     if (filtrados.length === 0) {
-        produtosEl.textContent = "Ainda não existem produtos disponíveis.";
+        produtosEl.textContent = "Ainda não existem produtos disponíveis nesta categoria.";
         return;
     }
 
@@ -121,12 +178,18 @@ function mostrarProdutos() {
         const cartao = document.createElement("article");
         cartao.className = "produto";
 
-        const imagem = document.createElement("img");
-        imagem.alt = produto.nome || "Produto";
-        imagem.loading = "lazy";
+        if (produto.destaque) {
+            cartao.classList.add("produto-destaque");
+        }
 
-        if (produto.imagem_url) {
-            imagem.src = produto.imagem_url;
+        if (produto.foto_path) {
+            const imagem = document.createElement("img");
+
+            imagem.alt = produto.nome || "Fotografia do prato";
+            imagem.loading = "lazy";
+            imagem.src = obterImagem(produto.foto_path);
+
+            cartao.appendChild(imagem);
         }
 
         const conteudo = document.createElement("div");
@@ -134,18 +197,30 @@ function mostrarProdutos() {
 
         const nome = criarTexto("h3", produto.nome);
         const descricao = criarTexto("p", produto.descricao);
-        const preco = criarTexto("p", `${produto.preco ?? 0} MT`);
+        const preco = criarTexto(
+            "p",
+            formatarPreco(produto.preco_centavos)
+        );
 
         preco.className = "preco";
 
         conteudo.append(nome, descricao, preco);
-        cartao.append(imagem, conteudo);
+        cartao.appendChild(conteudo);
+
         produtosEl.appendChild(cartao);
     });
 }
 
+// INICIAR O CARDÁPIO
 async function iniciar() {
-    await carregarRestaurante();
+    restauranteEl.textContent = "A carregar restaurante...";
+
+    const restauranteEncontrado = await carregarRestaurante();
+
+    if (!restauranteEncontrado) {
+        return;
+    }
+
     await carregarCategorias();
     await carregarProdutos();
 }
