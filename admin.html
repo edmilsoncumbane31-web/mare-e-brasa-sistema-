@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -10,64 +11,147 @@
 </head>
 <body>
 
-    <header class="topo">
-        <div>
-            <h1>Maré e Brasa</h1>
-            <p>Painel Administrativo</p>
+<header class="topo">
+    <div>
+        <h1>Maré e Brasa</h1>
+        <p>Painel de Gestão</p>
+    </div>
+    <button id="btn-sair" hidden>Terminar sessão</button>
+</header>
+
+<main>
+
+    <!-- LOGIN -->
+    <section id="login" class="painel">
+        <h2>Acesso administrativo</h2>
+        <p>Entre com a sua conta autorizada.</p>
+
+        <form id="form-login">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" required>
+
+            <label for="senha">Palavra-passe</label>
+            <input type="password" id="senha" required>
+
+            <button type="submit">Entrar</button>
+            <p id="mensagem-login"></p>
+        </form>
+    </section>
+
+    <!-- PAINEL PRINCIPAL -->
+    <section id="dashboard" hidden>
+
+        <div class="cabecalho-dashboard">
+            <div>
+                <h2>Visão geral</h2>
+                <p id="boas-vindas"></p>
+            </div>
         </div>
-        <button id="btn-sair" hidden>Terminar sessão</button>
-    </header>
 
-    <main>
-        <section id="login" class="painel">
-            <h2>Acesso administrativo</h2>
-            <p>Entre com a sua conta autorizada.</p>
-
-            <form id="form-login">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" required>
-
-                <label for="senha">Palavra-passe</label>
-                <input type="password" id="senha" required>
-
-                <button type="submit">Entrar</button>
-                <p id="mensagem-login"></p>
-            </form>
-        </section>
-
-        <section id="dashboard" hidden>
-            <h2>Visão geral</h2>
-            <p id="boas-vindas"></p>
-
-            <div class="resumo">
-                <div class="cartao">
-                    <span>Pedidos novos</span>
-                    <strong id="pedidos-novos">0</strong>
-                </div>
-
-                <div class="cartao">
-                    <span>Em preparação</span>
-                    <strong id="pedidos-preparacao">0</strong>
-                </div>
-
-                <div class="cartao">
-                    <span>Prontos</span>
-                    <strong id="pedidos-prontos">0</strong>
-                </div>
+        <!-- INDICADORES -->
+        <div class="resumo">
+            <div class="cartao">
+                <span>Pedidos novos</span>
+                <strong id="pedidos-novos">0</strong>
             </div>
 
-            <section class="secao">
-                <h2>Pedidos recentes</h2>
-                <div id="lista-pedidos">
-                    A carregar pedidos...
-                </div>
-            </section>
-        </section>
-    </main>
+            <div class="cartao">
+                <span>Em preparação</span>
+                <strong id="pedidos-preparacao">0</strong>
+            </div>
 
-    <footer>
-        Maré e Brasa · Gestão do Restaurante
-    </footer>
+            <div class="cartao">
+                <span>Prontos</span>
+                <strong id="pedidos-prontos">0</strong>
+            </div>
+        </div>
+
+        <!-- NAVEGAÇÃO -->
+        <nav class="navegacao">
+            <button class="nav-btn ativo" data-secao="secao-pedidos">
+                Pedidos
+            </button>
+            <button class="nav-btn" data-secao="secao-cardapio">
+                Cardápio
+            </button>
+            <button class="nav-btn" data-secao="secao-mesas">
+                Mesas
+            </button>
+            <button class="nav-btn" data-secao="secao-equipa">
+                Equipa
+            </button>
+            <button class="nav-btn" data-secao="secao-historico">
+                Histórico
+            </button>
+        </nav>
+
+        <!-- PEDIDOS -->
+        <section id="secao-pedidos" class="secao">
+            <h2>Gestão de pedidos</h2>
+
+            <div class="filtros">
+                <label for="filtro-estado">Filtrar por estado</label>
+                <select id="filtro-estado">
+                    <option value="todos">Todos os pedidos</option>
+                    <option value="novo">Novos</option>
+                    <option value="confirmado">Confirmados</option>
+                    <option value="em_preparacao">Em preparação</option>
+                    <option value="pronto">Prontos</option>
+                    <option value="entregue">Entregues</option>
+                    <option value="cancelado">Cancelados</option>
+                </select>
+            </div>
+
+            <button id="btn-atualizar-pedidos">
+                Atualizar pedidos
+            </button>
+
+            <div id="lista-pedidos">
+                A carregar pedidos...
+            </div>
+        </section>
+
+        <!-- CARDÁPIO -->
+        <section id="secao-cardapio" class="secao" hidden>
+            <h2>Gestão do cardápio</h2>
+            <p>Gestão de categorias, pratos, preços, fotografias e disponibilidade.</p>
+            <div id="gestao-cardapio">
+                Esta área será implementada na próxima etapa.
+            </div>
+        </section>
+
+        <!-- MESAS -->
+        <section id="secao-mesas" class="secao" hidden>
+            <h2>Gestão de mesas</h2>
+            <p>Consultar mesas, controlar abertura e encerramento e gerir QR Codes.</p>
+            <div id="lista-mesas">
+                Esta área será implementada na próxima etapa.
+            </div>
+        </section>
+
+        <!-- EQUIPA -->
+        <section id="secao-equipa" class="secao" hidden>
+            <h2>Gestão da equipa</h2>
+            <p>Consultar funcionários e respetivas permissões.</p>
+            <div id="lista-equipa">
+                Esta área será implementada na próxima etapa.
+            </div>
+        </section>
+
+        <!-- HISTÓRICO -->
+        <section id="secao-historico" class="secao" hidden>
+            <h2>Histórico de operações</h2>
+            <div id="lista-historico">
+                Esta área será implementada na próxima etapa.
+            </div>
+        </section>
+
+    </section>
+</main>
+
+<footer>
+    Maré e Brasa · Sistema de Gestão
+</footer>
 
 </body>
 </html>
