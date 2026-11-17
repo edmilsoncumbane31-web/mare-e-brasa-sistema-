@@ -1,143 +1,44 @@
-:root {
-    --azul: #101b2d;
-    --azul-claro: #1c304a;
-    --dourado: #c69b55;
-    --fundo: #f5f3ef;
-    --branco: #ffffff;
-    --texto: #252525;
-}
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#101b2d">
+    <meta name="description" content="Consulta o cardápio digital do Maré e Brasa e faz o teu pedido diretamente à mesa.">
+    <title>Maré e Brasa | Cardápio Digital</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="app.js"></script>
+</head>
+<body>
 
-body {
-    font-family: Arial, sans-serif;
-    background: var(--fundo);
-    color: var(--texto);
-    min-height: 100vh;
-}
+    <header class="cabecalho">
+        <div class="cabecalho-conteudo">
+            <p class="marca">MARÉ E BRASA</p>
+            <h1>Sabores que ficam na memória.</h1>
+            <p class="subtitulo">Explora o nosso cardápio e faz o teu pedido.</p>
+        </div>
+    </header>
 
-header {
-    background: var(--azul);
-    color: var(--branco);
-    text-align: center;
-    padding: 35px 15px;
-    border-bottom: 4px solid var(--dourado);
-}
+    <main class="conteudo">
 
-header h1 {
-    font-size: 30px;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-}
+        <section id="restaurante" class="informacao-restaurante">
+            <p>A carregar restaurante...</p>
+        </section>
 
-header p {
-    color: #d7c5a5;
-    font-size: 14px;
-}
+        <section class="secao-cardapio">
+            <h2>O nosso cardápio</h2>
+            <div id="categorias" class="categorias"></div>
+            <div id="produtos" class="produtos"></div>
+        </section>
 
-main {
-    width: 100%;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 25px 15px;
-}
+    </main>
 
-#restaurante {
-    text-align: center;
-    margin-bottom: 25px;
-    line-height: 1.6;
-}
+    <footer class="rodape">
+        <p>MARÉ E BRASA</p>
+        <p>Uma experiência de sabor.</p>
+        <small>Maputo, Moçambique</small>
+    </footer>
 
-#categorias {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding: 10px 0 18px;
-    margin-bottom: 15px;
-}
-
-#categorias button {
-    background: var(--azul);
-    color: var(--branco);
-    border: none;
-    padding: 11px 18px;
-    border-radius: 25px;
-    white-space: nowrap;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-#categorias button:hover,
-#categorias button.ativo {
-    background: var(--dourado);
-    color: var(--azul);
-}
-
-#produtos {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 18px;
-}
-
-.produto {
-    background: var(--branco);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
-}
-
-.produto img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    background: #e5e5e5;
-}
-
-.produto-conteudo {
-    padding: 15px;
-}
-
-.produto h3 {
-    color: var(--azul);
-    font-size: 18px;
-    margin-bottom: 8px;
-}
-
-.produto p {
-    font-size: 14px;
-    line-height: 1.5;
-    margin-bottom: 10px;
-}
-
-.produto .preco {
-    color: #9a7135;
-    font-weight: bold;
-    font-size: 17px;
-}
-
-footer {
-    background: var(--azul);
-    color: #d7c5a5;
-    text-align: center;
-    padding: 20px;
-    margin-top: 35px;
-    font-size: 13px;
-}
-
-button {
-    font-family: inherit;
-}
-
-@media (max-width: 480px) {
-    header h1 {
-        font-size: 25px;
-    }
-
-    #produtos {
-        grid-template-columns: 1fr;
-    }
-}
+</body>
+</html>
