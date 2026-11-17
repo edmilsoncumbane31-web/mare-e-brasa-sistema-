@@ -5,29 +5,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#101b2d">
+    <meta name="description" content="Consulta o cardápio digital do Maré e Brasa e faz o teu pedido diretamente à mesa.">
     <title>Maré e Brasa | Cardápio Digital</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="app.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Maré e Brasa</h1>
-        <p>Cardápio Digital</p>
+
+    <header class="cabecalho">
+        <div class="cabecalho-conteudo">
+            <p class="marca">MARÉ E BRASA</p>
+            <h1>Sabores que ficam na memória.</h1>
+            <p class="subtitulo">Explora o nosso cardápio e faz o teu pedido.</p>
+        </div>
     </header>
 
-    <main>
-        <section id="restaurante">
-            <p>A carregar cardápio...</p>
+    <main class="conteudo">
+
+        <section id="restaurante" class="informacao-restaurante">
+            <p>A carregar restaurante...</p>
         </section>
 
-        <section id="categorias"></section>
+        <section class="secao-cardapio">
+            <h2>O nosso cardápio</h2>
+            <div id="categorias" class="categorias"></div>
+            <div id="produtos" class="produtos"></div>
+        </section>
 
-        <section id="produtos"></section>
     </main>
 
-    <footer>
-        <p>Maré e Brasa · Maputo</p>
+    <footer class="rodape">
+        <p>MARÉ E BRASA</p>
+        <p>Uma experiência de sabor.</p>
+        <small>Maputo, Moçambique</small>
     </footer>
+
 </body>
 </html>
